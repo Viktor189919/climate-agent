@@ -1,6 +1,6 @@
 import { type NextRequest, NextResponse } from "next/server";
 import type { IUserCredentials } from "@/types/auth";
-import { signUpNewUser } from "../../../../lib/supabase/auth/authentication";
+import { signUpNewUser } from "@/lib/supabase/auth/authentication";
 
 
 export async function POST(req: NextRequest) {
