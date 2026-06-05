@@ -24,13 +24,6 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({message: "Api key is invalid", keyData: keyData});
   }
 
-  // Will be removed when types are added to supabase client
-  let user_id;
-  for (const [key, value] of Object.entries(keyData[0])) {
-    if (key === 'user_id')
-      user_id = value;
-  }
-
   const { token_count, ai_provider, grid_co2_density } = await req.json();
 
   const total_g_co2_emission = 200; // Placeholder value, replace with actual calculation based on token_count, ai_provider and grid_co2_density
@@ -41,11 +34,11 @@ export async function POST(req: NextRequest) {
       ai_provider: ai_provider, 
       grid_co2_density: grid_co2_density,
       total_g_co2_emission: total_g_co2_emission,
-      user_id: user_id,
+      user_id: keyData[0].user_id,
     })
   
   if (batchError) {
-    return NextResponse.json({message: batchError, status: batchError.code, key: user_id});
+    return NextResponse.json({message: batchError, status: batchError.code});
   }
 
   return NextResponse.json({message: 'Data received and inserted successfully', status: 200});
