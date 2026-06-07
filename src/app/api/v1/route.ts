@@ -1,6 +1,8 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { hash } from "@/lib/helper/apiKey";
+import { calculateCO2Emissions } from "@/lib/helper/co2Calculator";
+import { isAiProvider } from "@/types/calculations";
 
 export async function POST(req: NextRequest) {
 
@@ -24,15 +26,19 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({message: "Api key is invalid", keyData: keyData});
   }
 
-  const { token_count, ai_provider, grid_co2_density } = await req.json();
+  const { token_count, ai_provider, grid_co2_per_kWh_density } = await req.json();
 
-  const total_g_co2_emission = 200; // Placeholder value, replace with actual calculation based on token_count, ai_provider and grid_co2_density
+  if (!isAiProvider(ai_provider)) {
+    return NextResponse.json({message: "Invalid ai provider"}, {status: 400});
+  }
+
+  const total_g_co2_emission = calculateCO2Emissions(token_count, ai_provider, grid_co2_per_kWh_density); 
 
   const { error: batchError } = await supabase.from('usage_batches')
     .insert({
       token_count: token_count, 
       ai_provider: ai_provider, 
-      grid_co2_density: grid_co2_density,
+      grid_co2_per_kWh_density: grid_co2_per_kWh_density,
       total_g_co2_emission: total_g_co2_emission,
       user_id: keyData[0].user_id,
     })
