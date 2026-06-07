@@ -39,7 +39,7 @@ export type Database = {
         Row: {
           ai_provider: Database["public"]["Enums"]["AI_PROVIDER"]
           created_at: string
-          grid_co2_density: number | null
+          grid_co2_per_kWh_density: number | null
           id: string
           token_count: number
           total_g_co2_emission: number
@@ -48,7 +48,7 @@ export type Database = {
         Insert: {
           ai_provider: Database["public"]["Enums"]["AI_PROVIDER"]
           created_at?: string
-          grid_co2_density?: number | null
+          grid_co2_per_kWh_density?: number | null
           id?: string
           token_count: number
           total_g_co2_emission: number
@@ -57,7 +57,7 @@ export type Database = {
         Update: {
           ai_provider?: Database["public"]["Enums"]["AI_PROVIDER"]
           created_at?: string
-          grid_co2_density?: number | null
+          grid_co2_per_kWh_density?: number | null
           id?: string
           token_count?: number
           total_g_co2_emission?: number
