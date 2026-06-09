@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
+import { serverErrorRes } from "@/lib/helper/response";
 
 export async function GET() {
 
@@ -8,8 +9,9 @@ export async function GET() {
   const { data, error } = await supabase.from('usage_batches').select("*");
 
   if (error) {
-    return NextResponse.json(error);
+    const { message, status } = serverErrorRes();
+    return NextResponse.json(message, status);
   }
 
-  return NextResponse.json(data);
+  return NextResponse.json({message: "Data retrieved successfully", data: data}, {status: 200});
 }
