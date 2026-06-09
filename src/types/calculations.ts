@@ -1,15 +1,7 @@
-export enum AiProvider {
-  GOOGLE = "google",
-  OPEN_AI = "open_ai",
-  ANTHROPIC = "anthropic"
-}
+import { EAiProvider } from "./v1";
 
-export const WH_PER_PROMPT: Record<AiProvider, number> = {
-  [AiProvider.GOOGLE]: 0.24,
-  [AiProvider.OPEN_AI]: 0.34,
-  [AiProvider.ANTHROPIC]: 0.35,
+export const WH_PER_PROMPT: Record<EAiProvider, number> = {
+  [EAiProvider.GOOGLE]: 0.24,
+  [EAiProvider.OPEN_AI]: 0.34,
+  [EAiProvider.ANTHROPIC]: 0.35,
 };
-
-export function isAiProvider(value: string): value is AiProvider {
-  return Object.values(AiProvider).includes(value as AiProvider);
-}
