@@ -26,7 +26,9 @@ export async function updateSession(request: NextRequest) {
       }
     } catch (error) {
       console.error('Middleware error:', error);
-      // Låt requesten fortsätta istället för att krascha
+      const url = request.nextUrl.clone();
+      url.pathname = '/signin';
+      return NextResponse.redirect(url);
     }
 
   return supabaseResponse
