@@ -12,6 +12,6 @@ export const UserCredentials = z.object({
 export const V1RequestBody = z.object({
   token_count: z.number().int().positive(),
   ai_provider: ProviderEnum,
-  grid_g_co2_per_kWh_density: z.number().positive().optional(),
+  grid_g_co2_per_kWh_intensity: z.number().positive().optional(),
 });
 

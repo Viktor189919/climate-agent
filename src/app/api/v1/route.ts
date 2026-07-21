@@ -32,12 +32,12 @@ export async function POST(req: NextRequest) {
 
   const data = await req.json();
 
-  const {token_count, ai_provider, grid_g_co2_per_kWh_density} = data;
+  const {token_count, ai_provider, grid_g_co2_per_kWh_intensity} = data;
 
   const validation = V1RequestBody.safeParse({
     token_count,
     ai_provider,
-    grid_g_co2_per_kWh_density
+    grid_g_co2_per_kWh_intensity
   });
 
   if (!validation.success) {
@@ -49,16 +49,16 @@ export async function POST(req: NextRequest) {
     )
   }
 
-  const total_g_co2_emission = calculateCO2Emissions(token_count, ai_provider, grid_g_co2_per_kWh_density); 
+  const total_g_co2_emission = calculateCO2Emissions(token_count, ai_provider, grid_g_co2_per_kWh_intensity); 
 
   const { data: batchData, error: batchError } = await supabase.from('usage_batches')
     .insert({
       token_count: token_count, 
       ai_provider: ai_provider, 
-      grid_g_co2_per_kWh_density: grid_g_co2_per_kWh_density,
+      grid_g_co2_per_kWh_intensity: grid_g_co2_per_kWh_intensity,
       total_g_co2_emission: total_g_co2_emission,
       user_id: keyData[0].user_id,
-    }).select("id, token_count, ai_provider, grid_g_co2_per_kWh_density, total_g_co2_emission" )
+    }).select("id, token_count, ai_provider, grid_g_co2_per_kWh_intensity, total_g_co2_emission" )
   
   if (batchError) {
     return NextResponse.json({message: batchError, status: batchError.code});
@@ -71,7 +71,7 @@ export async function POST(req: NextRequest) {
       id: batchData[0].id,
       token_count: batchData[0].token_count, 
       ai_provider: batchData[0].ai_provider, 
-      grid_g_co2_per_kWh_density: batchData[0].grid_g_co2_per_kWh_density,
+      grid_g_co2_per_kWh_intensity: batchData[0].grid_g_co2_per_kWh_intensity,
       total_g_co2_emission: Math.floor((batchData[0].total_g_co2_emission) * 100) / 100, 
     }
   }

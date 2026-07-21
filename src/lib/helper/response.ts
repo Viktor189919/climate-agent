@@ -12,25 +12,25 @@ export function serverErrorRes() {
 export function transformZodErrors(validation: ZodSafeParseError<{
     token_count: number;
     ai_provider: "google" | "open_ai" | "anthropic";
-    grid_g_co2_per_kWh_density?: number | undefined;
+    grid_g_co2_per_kWh_intensity?: number | undefined;
 }>, receivedData: any) {
 
   const errors = validation.error.issues.map((i) => {
-        const field = i.path[0] as keyof typeof EXPECTED_V1_FORMAT;
-        const expected = EXPECTED_V1_FORMAT[field] ?? "unknown format";
-  
-        const error: any = {
-          field: i.path[0], 
-          code: i.code, 
-          received: {
-            type: typeof receivedData[i.path[0]],
-            value: receivedData[i.path[0]]
-          },
-          expected: expected
-        }
+    const field = i.path[0] as keyof typeof EXPECTED_V1_FORMAT;
+    const expected = EXPECTED_V1_FORMAT[field] ?? "unknown format";
 
-        return error;
-      })
+    const error: any = {
+      field: i.path[0], 
+      code: i.code, 
+      received: {
+        type: typeof receivedData[i.path[0]],
+        value: receivedData[i.path[0]]
+      },
+      expected: expected
+    }
+
+    return error;
+  })
       
   return errors;
 }
