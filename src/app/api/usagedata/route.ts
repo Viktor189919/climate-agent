@@ -38,7 +38,7 @@ export async function POST() {
         token_count: randTokens,
         ai_provider: EAiProvider.ANTHROPIC,
         user_id: "40a31b1d-1993-4a58-87fc-d93d421c364f",
-        grid_g_co2_per_kWh_density: 200,
+        grid_g_co2_per_kWh_intensity: 200,
         total_g_co2_emission: co2,
         created_at: (new Date(`05 ${months[i]} 2011 14:48 UTC`)).toISOString()
       });

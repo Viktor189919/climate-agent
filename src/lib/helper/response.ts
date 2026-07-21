@@ -12,7 +12,7 @@ export function serverErrorRes() {
 export function transformZodErrors(validation: ZodSafeParseError<{
     token_count: number;
     ai_provider: "google" | "open_ai" | "anthropic";
-    grid_g_co2_per_kWh_density?: number | undefined;
+    grid_g_co2_per_kWh_intensity?: number | undefined;
 }>, receivedData: any) {
 
   const errors = validation.error.issues.map((i) => {

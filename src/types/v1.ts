@@ -7,5 +7,5 @@ export enum EAiProvider {
 export const EXPECTED_V1_FORMAT = {
   token_count: {type: "int", minimum: 0},
   ai_provider: Object.values(EAiProvider).join(" | "),
-  grid_g_co2_per_kWh_density: {type: "number", minimum: 0},
+  grid_g_co2_per_kWh_intensity: {type: "number", minimum: 0},
 } as const;

@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import type { IData } from "@/types/dashboard";
 import { LineChart } from "@mui/x-charts/LineChart";
 import { EAiProvider } from "@/types/v1";
+import { EU_US_AVG_CO2_INTENSITY, AVG_KWH_CHARGE_SMARTPHONE } from "@/types/calculations";
 
 export default function Dashboard() {
 
@@ -44,6 +45,8 @@ export default function Dashboard() {
   return d.toLocaleString('en-US', { month: 'short', year: 'numeric' });
 };
 
+  const totalCO2g = data.map((i) => i.total_g_co2_emission).reduce((i, sum) => i + sum, 0)
+
   const months = ["jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", "sep", "okt", "nov", "dec"];
 
   const googleUsage = data?.filter(item => item.ai_provider === EAiProvider.GOOGLE).sort((a, b) => (new Date(a.created_at).getTime()) - (new Date(b.created_at).getTime()));
@@ -61,29 +64,38 @@ export default function Dashboard() {
   }
 
   return (
-    <div className="w-full flex flex-1 flex-col items-center justify-start gap-5">
+    <main className="flex flex-col items-center m-10">
+      <h1 className="text-3xl font-semibold tracking-[0.2em] text-slate-900 transition mb-8">AI Usage</h1>
+      <div className="mb-10 flex flex-col items-center gap-3 rounded-2xl border-3 border-orange-200 px-6 py-5 shadow-sm bg-white">
+        <h2 className="text-xl font-semibold tracking-wide text-slate-900">Total CO2 emitted</h2>
+        <p className="text-3xl font-bold text-orange-300">{Math.round(totalCO2g / 1000)} kg</p>
+        <p className="text-sm text-slate-600">Estimated total impact from your AI usage</p>
+        <p>The same amount emitted as charging <b>{Math.round(totalCO2g / (EU_US_AVG_CO2_INTENSITY * AVG_KWH_CHARGE_SMARTPHONE))}</b> smartphones</p>
+      </div>
       {data && data.length > 0 &&
-        <div className="w-[80%] grid grid-cols-2 grid-rows-1 place-items-center gap-5">
+        <div className="grid grid-cols-[max-content_max-content] gap-1 grid-rows-1 place-items-center">
             {(googleUsage && googleUsage.length > 1) && (openAIUsage && openAIUsage.length > 1) && (anthropicUsage && anthropicUsage.length > 1) &&
-            <div className="border rounded-md p-5">
+            <div className="shadow-sm border rounded-sm shadow-black bg-gray-200 border-gray-200 p-2">
               <LineChart
                 grid={{ horizontal: true }}
                 height={300} 
-                width={600} 
+                width={400} 
                 xAxis={[{data: googleUsage.map((x, y) => months[monthConvert(x.created_at)]), scaleType: 'band',label: '2026'}]} 
                 yAxis={[{width: 100, min: (Math.min(...googleUsage.map(d => d.token_count)) / 2), max: (Math.max(...googleUsage.map(d => d.token_count)) * 1.4), label: 'TOKENS'}]} 
-                series={aiUsage.map((item, index) => { 
-                  return {data: item.map(i => i.token_count), label: labels[index], color: graphColors[index], curve: "linear"} 
-                })}
+                series={[
+                  {data: [...googleUsage.map((d) => d.token_count)], label: "Google", color: '#4285F4', curve: "linear"},
+                  {data: [...openAIUsage.map(d => d.token_count)], label: "OpenAI", color: '#10a37f', curve: 'linear'},
+                  {data: [...anthropicUsage?.map((d) => d.token_count)], label: "Anthropic", color: '#d97757', curve: 'linear'}
+                ]}
               />
             </div>
           } 
           {(data && googleUsage && googleUsage.length > 1) && (openAIUsage && openAIUsage.length > 1) && (anthropicUsage && anthropicUsage.length > 1) &&
-            <div className="border rounded-md p-5">
+            <div className="shadow-sm border rounded-sm shadow-black bg-gray-200 border-gray-200 p-2">
               <LineChart
                 grid={{ horizontal: true }}
                 height={300} 
-                width={600} 
+                width={400} 
                 xAxis={[{data: googleUsage.map((x, y) => months[monthConvert(x.created_at)]), scaleType: 'band',label: '2026'}]} 
                 yAxis={[{width: 100, min: (Math.min(...openAIUsage.map(d => d.total_g_co2_emission)) / 2), max: (Math.max(...openAIUsage.map(d => d.total_g_co2_emission)) * 1.5), label: 'g CO2'}]} 
                 series={[
@@ -96,8 +108,6 @@ export default function Dashboard() {
           } 
         </div>
       }
-      <LineChart height={300} 
-                width={600}  series={[]} />
-    </div>
+    </main>
   )
 }
