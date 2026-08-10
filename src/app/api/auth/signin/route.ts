@@ -15,7 +15,7 @@ export async function POST(req: NextRequest) {
   const { data, error } = await signInWithEmail(userData);
 
   if (error) {
-    return NextResponse.json({message: error.message, status: error.status});
+    return NextResponse.json({message: error.message}, {status: error.status});
   }
 
   return NextResponse.json(data);

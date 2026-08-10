@@ -1,9 +1,11 @@
 'use client'
 
-import { redirect } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { UserCredentials } from "@/lib/zod/schemas";
 
 export default function SignInPage() {
+  const router = useRouter();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -19,6 +21,14 @@ export default function SignInPage() {
     }
     
     try {
+
+      const validation = UserCredentials.safeParse({email, password});
+
+      if (!validation.success) {
+        setMessage("Invalid credentials");
+        return;
+      }
+
       const res = await fetch("/api/auth/signin", {
         method: "POST",
         headers: {
@@ -33,9 +43,10 @@ export default function SignInPage() {
         return;
       }
 
-      redirect("/dashboard");
+      router.push("/dashboard");
 
     } catch (error) {
+      setMessage("An error occurred during login");
       console.log(error)
     }
     

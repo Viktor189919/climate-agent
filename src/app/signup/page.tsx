@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from "react";
-import { redirect } from "next/navigation";
+import { useRouter } from "next/navigation";
 
 export default function SignupPage() {
 
@@ -10,6 +10,8 @@ export default function SignupPage() {
   const [message, setMessage] = useState("");
 
   async function handleSignup() {
+
+    const router = useRouter();
 
     setMessage("");
     
@@ -29,11 +31,11 @@ export default function SignupPage() {
 
       if (!res.ok) {
         const errorData = await res.json();
-        setMessage(errorData.message || "Signup failed");
+        setMessage(errorData.message || "An error occurred during signup");
         return;
       }
 
-      redirect("/signin");
+      router.push("/signin");
     } catch (error) {
       setMessage("An error occurred during signup");
       console.log(error)
