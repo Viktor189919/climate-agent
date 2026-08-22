@@ -1,13 +1,5 @@
 import type { ZodSafeParseError } from "zod"
 import { EXPECTED_V1_FORMAT } from "@/types/v1"
- 
-export function unauthorizedV1Res() {
-  return {message: {message: "Unauthorized"}, status: {status: 401}}
-}
-
-export function serverErrorRes() {
-  return {message: {message: "Internal server error"}, status: {status: 500}}
-}
 
 export function transformZodErrors(validation: ZodSafeParseError<{
     token_count: number;
@@ -33,4 +25,19 @@ export function transformZodErrors(validation: ZodSafeParseError<{
   })
       
   return errors;
+}
+
+export function errorCodeToResponseMessage(errorCode: string) {
+  switch (errorCode) {
+
+    case "invalid_credentials":
+      return "Invalid credentials";
+
+    case "email_not_confirmed":
+      return "Confirm your email address before signing in";
+    
+    default: 
+      return undefined;
+
+  }
 }
