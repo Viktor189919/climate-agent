@@ -1,23 +1,26 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
-import { serverErrorRes } from "@/lib/helper/response";
 import { calculateCO2Emissions } from "@/lib/helper/co2Calculator";
 import { EAiProvider } from "@/types/v1";
 
 export async function GET() {
 
-  const supabase = await createClient();
+  try {
+    const supabase = await createClient();
 
-  const { data, error } = await supabase.from('usage_batches').select("*");
+    const { data, error } = await supabase.from('usage_batches').select("*");
 
-  if (error) {
-    const { message, status } = serverErrorRes();
-    return NextResponse.json(message, status);
+    if (error) {
+      return NextResponse.json({message: "Error fetching usage data"}, {status: 500});
+    }
+
+    return NextResponse.json({ data }, {status: 200});
+  } catch (error) {
+    return NextResponse.json({message: "Internal server error"}, {status: 500});
   }
-
-  return NextResponse.json({message: "Data retrieved successfully", data: data}, {status: 200});
 }
 
+// Code to generate random usage data for testing purposes
 export async function POST() {
 
   const token_max = 20000000;
