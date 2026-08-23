@@ -3,16 +3,13 @@ import { IUserCredentials } from '@/types/auth';
 
 export async function signUpNewUser(userData: IUserCredentials) {
 
-  const supabase = await createClient();
+  const supabase = await createClient(false);
 
   const { email, password } = userData;
 
   const supabaseRes = await supabase.auth.signUp({
     email: email,
     password: password,
-    // options: {
-    //   emailRedirectTo: 'https://example.com/welcome',
-    // },
   })
 
   return supabaseRes
@@ -20,7 +17,7 @@ export async function signUpNewUser(userData: IUserCredentials) {
 
 export async function signInWithEmail(userData: IUserCredentials) {
 
-  const supabase = await createClient();
+  const supabase = await createClient(false);
 
   const { email, password } = userData;
 
@@ -34,7 +31,7 @@ export async function signInWithEmail(userData: IUserCredentials) {
 
 export async function signOutUser() {
 
-  const supabase = await createClient();
+  const supabase = await createClient(false);
 
   const supabaseRes = await supabase.auth.signOut();
 
