@@ -5,11 +5,13 @@ import type { IData } from "@/types/dashboard";
 import { LineChart } from "@mui/x-charts/LineChart";
 import { EAiProvider } from "@/types/v1";
 import { EU_US_AVG_CO2_INTENSITY, AVG_KWH_CHARGE_SMARTPHONE } from "@/types/calculations";
+import ApiKeyPopup from "@/components/apiKeyPopup";
 
 export default function Dashboard() {
 
   const [message, setMessage] = useState<string | null>(null);
   const [data, setData] = useState<IData[] | null>(null);
+  const [apiKey, setApiKey] = useState<string | null>(null);
 
   useEffect(() => {
 
@@ -35,6 +37,27 @@ export default function Dashboard() {
     }
     getData();
   }, [])
+
+  async function handleGenerateApiKey() {
+    try {
+      const res = await fetch('/api/keys', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
+
+      if (!res.ok) {
+        setMessage("Failed to generate API key");
+        return;
+      }
+
+      const { api_key } = await res.json();
+      setApiKey(api_key);
+    } catch (error) {
+      setMessage("An error occurred while generating the API key");
+    }
+  }
 
   if (!data) {
     return;
@@ -64,7 +87,7 @@ export default function Dashboard() {
   }
 
   return (
-    <main className="flex flex-col items-center m-10">
+    <main className="flex flex-col items-center m-10 relative">
       <h1 className="text-3xl font-semibold tracking-[0.2em] text-slate-900 transition mb-8">AI Usage</h1>
       <div className="mb-10 flex flex-col items-center gap-3 rounded-2xl border-3 border-orange-200 px-6 py-5 shadow-sm bg-white">
         <h2 className="text-xl font-semibold tracking-wide text-slate-900">Total CO2 emitted</h2>
@@ -72,6 +95,13 @@ export default function Dashboard() {
         <p className="text-sm text-slate-600">Estimated total impact from your AI usage</p>
         <p>The same amount emitted as charging <b>{Math.round(totalCO2g / (EU_US_AVG_CO2_INTENSITY * AVG_KWH_CHARGE_SMARTPHONE))}</b> smartphones</p>
       </div>
+      <button className="bg-blue-500 text-white p-2 rounded-md hover:bg-blue-600 hover:cursor-pointer transition absolute top-4 right-4" onClick={handleGenerateApiKey}>
+        Get API key
+      </button>
+      {message && <p className="text-red-500">{message}</p>}
+      {apiKey && 
+        <ApiKeyPopup apiKey={apiKey} onClose={() => setApiKey(null)} />
+      }
       {data && data.length > 0 &&
         <div className="grid grid-cols-[max-content_max-content] gap-1 grid-rows-1 place-items-center">
             {(googleUsage && googleUsage.length > 1) && (openAIUsage && openAIUsage.length > 1) && (anthropicUsage && anthropicUsage.length > 1) &&
