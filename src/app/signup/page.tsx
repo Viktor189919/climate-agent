@@ -9,9 +9,9 @@ export default function SignupPage() {
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState("");
 
+  const router = useRouter();
+  
   async function handleSignup() {
-
-    const router = useRouter();
 
     setMessage("");
     
