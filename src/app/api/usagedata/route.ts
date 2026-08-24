@@ -8,7 +8,11 @@ export async function GET() {
   try {
     const supabase = await createClient(false);
 
-    const { data, error } = await supabase.from('usage_batches').select("*");
+    const { data, error } = await supabase
+      .from('usage_batches')
+      .select("*")
+      .order('ai_provider', { ascending: true }) // Gruppera efter leverantör
+      .order('created_at', { ascending: true }); // Sedan efter datum
 
     if (error) {
       return NextResponse.json({message: "Error fetching usage data"}, {status: 500});
