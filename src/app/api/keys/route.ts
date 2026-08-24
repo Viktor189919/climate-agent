@@ -5,7 +5,7 @@ import { NextResponse } from "next/server";
 export async function POST() {
 
   try {
-    const supabase = await createClient();
+    const supabase = await createClient(false);
 
     const { api_key, api_key_hash } = generateApiKey();
 

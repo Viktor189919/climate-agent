@@ -14,7 +14,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({message: "Unauthorized"}, {status: 401});
     }
 
-    const supabase = await createClient();
+    const supabase = await createClient(true);
 
     const api_key_hash = hash(api_key);
 
