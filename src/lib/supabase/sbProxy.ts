@@ -8,7 +8,7 @@ export async function updateSession(request: NextRequest) {
   });
   
     try {
-      const supabase = await createClient();
+      const supabase = await createClient(false);
 
       const { data } = await supabase.auth.getClaims();
       const user = data?.claims;

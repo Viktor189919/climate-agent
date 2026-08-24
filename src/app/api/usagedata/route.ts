@@ -6,7 +6,7 @@ import { EAiProvider } from "@/types/v1";
 export async function GET() {
 
   try {
-    const supabase = await createClient();
+    const supabase = await createClient(false);
 
     const { data, error } = await supabase
       .from('usage_batches')
@@ -36,7 +36,7 @@ export async function POST() {
   for (let i = 0; i < 12; i++) {
     const randTokens = Math.round(Math.random() * (token_max - token_min) + token_min);
 
-    const supabase = await createClient();
+    const supabase = await createClient(false);
 
     const co2 = calculateCO2Emissions(randTokens, EAiProvider.ANTHROPIC);
 
