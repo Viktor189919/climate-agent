@@ -18,13 +18,13 @@ export async function POST(req: NextRequest) {
 
     const api_key_hash = hash(api_key);
 
-    const { data: keyData, error: keyError} = await supabase.from('api_keys').select().eq('key', api_key_hash);
+    const { data: keyData, error: keyError} = await supabase.from('api_keys').select('user_id').eq('key', api_key_hash).single();
 
     if (keyError) {
       return NextResponse.json({message: "Internal server error"}, {status: 500});
     }
 
-    if (keyData.length === 0) {
+    if (!keyData) {
       return NextResponse.json({message: "Unauthorized"}, {status: 401});
     }
 
